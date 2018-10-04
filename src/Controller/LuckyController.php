@@ -66,7 +66,7 @@ class LuckyController extends Controller
                 $em->persist($device);
                 $em->flush();
             }
-
+dump($device);die();
             $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
             $lastDeviceFlag = $repository3->findOneBy(
                 array(
