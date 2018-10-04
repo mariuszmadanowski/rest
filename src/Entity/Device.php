@@ -50,6 +50,13 @@ class Device
         return $this->serial_number;
     }
 
+    public function setSerialNumber(string $serialNumber): self
+    {
+        $this->serial_number = $serialNumber;
+
+        return $this;
+    }
+
     public function getCreated(): ?\DateTimeInterface
     {
         return $this->created;
