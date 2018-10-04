@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * App\Entity\PossibleNextFlag
  *
  * @ORM\Table(name="possible_next_flag", options={"engine": "InnoDB"})
- * @ORM\Entity(repositoryClass="App\Entity\PossibleNextFlagRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\PossibleNextFlagRepository")
  */
 class PossibleNextFlag
 {

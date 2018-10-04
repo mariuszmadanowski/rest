@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * App\Entity\DeviceFlag
  *
  * @ORM\Table(name="device_flag", options={"engine": "InnoDB"})
- * @ORM\Entity(repositoryClass="App\Entity\DeviceFlagRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\DeviceFlagRepository")
  */
 class DeviceFlag
 {

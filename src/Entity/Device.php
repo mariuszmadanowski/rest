@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * App\Entity\Device
  *
  * @ORM\Table(name="device", options={"engine": "InnoDB"})
- * @ORM\Entity(repositoryClass="App\Entity\DeviceRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\DeviceRepository")
  */
 class Device
 {

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * App\Entity\Flag
  *
  * @ORM\Table(name="flag", options={"engine": "InnoDB"})
- * @ORM\Entity(repositoryClass="App\Entity\FlagRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\FlagRepository")
  */
 class Flag
 {
