@@ -83,7 +83,7 @@ class DeviceController extends Controller
 
         if ($flag->getId() != 1 && !$device) {
             //throw new EntityNotFoundException('Devive with serial number '.$serialNumber.' does not exist!');
-            dump(Devive with serial number '.$serialNumber.' does not exist!, Response::HTTP_NOT_FOUND, []);
+            dump('Devive with serial number '.$serialNumber.' does not exist!', Response::HTTP_NOT_FOUND, []);
             die();
         } elseif ($flag->getId() == 1 && !count($device)) {
             $device = new Device();
