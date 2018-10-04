@@ -11,6 +11,7 @@ use App\Entity\Device;
 use App\Entity\Flag;
 use App\Entity\DeviceFlag;
 use App\Entity\PossibleNextFlag;
+use App\Services\DeviceService;
 
 /**
  * Device controller.
@@ -19,6 +20,11 @@ use App\Entity\PossibleNextFlag;
  */
 class DeviceController extends Controller
 {
+    /**
+     * @var DeviceService
+     */
+    private $deviceService;
+
     /**
      * @Route("/lucky/number/{max}", name="app_lucky_number")
      */
@@ -36,12 +42,13 @@ class DeviceController extends Controller
      */
     public function all()
     {
+        $this->deviceService = $this->container->get('device_service');
+
         $em = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()->getRepository(Flag::class);
         $allFlags = $repository->findAll();
 
-        $repository2 = $this->getDoctrine()->getRepository(Device::class);
-        $allDevices = $repository2->findAll();
+        $allDevices = $this->deviceService->getAllDevices();
 
         $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
         $allDeviceFlags = $repository3->findAll();

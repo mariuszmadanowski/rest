@@ -32,3 +32,30 @@ services:
 
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    device_repository:
+        class: App\Repository\DeviceRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - App\Entity\Device
+    flag_repository:
+        class: App\Repository\FlagRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - App\Entity\Flag
+    device_flag_repository:
+        class: App\Repository\DeviceFlagRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - App\Entity\DeviceFlag
+    possible_next_flag_repository:
+        class: App\Repository\PossibleNextFlagRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - App\Entity\PossibleNextFlag
+    device_service:
+        class: App\Services\DeviceService
+        shared: false
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@device_repository"
