@@ -50,12 +50,15 @@ services:
             - App\Entity\DeviceFlag
     possible_next_flag_repository:
         class: App\Repository\PossibleNextFlagRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
             - App\Entity\PossibleNextFlag
     device_service:
         class: App\Services\DeviceService
         shared: false
         arguments:
-            - "@doctrine.orm.entity_manager"
             - "@device_repository"
+    app.device_controller:
+        class: App\Controller\DeviceController
+        arguments:
+            - "@device_service"

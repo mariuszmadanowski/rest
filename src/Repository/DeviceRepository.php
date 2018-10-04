@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Entity\Device;
 
 /**
  * DeviceRepository
@@ -12,7 +14,13 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Mariusz Madanowski
  */
-class DeviceRepository extends EntityRepository
+class DeviceRepository extends ServiceEntityRepository
 {
-
+    /**
+     * @param ManagerRegistry $managerRegistry
+     */
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        parent::__construct($managerRegistry, Device::class);
+    }
 }

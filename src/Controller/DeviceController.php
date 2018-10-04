@@ -26,6 +26,15 @@ class DeviceController extends Controller
     private $deviceService;
 
     /**
+     * DeviceController constructor.
+     * @param DeviceService $deviceService
+     */
+    public function __construct(DeviceService $deviceService)
+    {
+        $this->deviceService = $deviceService;
+    }
+
+    /**
      * @Route("/lucky/number/{max}", name="app_lucky_number")
      */
     public function number($max)
@@ -42,8 +51,6 @@ class DeviceController extends Controller
      */
     public function all()
     {
-        $this->deviceService = $this->container->get('device_service');
-
         $em = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()->getRepository(Flag::class);
         $allFlags = $repository->findAll();

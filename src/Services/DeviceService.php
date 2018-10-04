@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Entity\Device;
 use App\Repository\DeviceRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -12,15 +11,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class DeviceService
 {
-    private $entityManager;
     private $deviceRepository;
 
     /**
      * @author Mariusz Madanowski
      */
-    public function __construct(EntityManager $entityManager, DeviceRepository $deviceRepository)
+    public function __construct(DeviceRepository $deviceRepository)
     {
-        $this->entityManager = $entityManager;
         $this->deviceRepository = $deviceRepository;
     }
 
