@@ -29,7 +29,6 @@ class Device
     /**
      * @ORM\Column(name="serial_number", type="string", length=10, unique=true)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern = "/[a-z0-9]+/",
