@@ -96,8 +96,6 @@ class DeviceService
         $deviceFlag->setCreated(new \DateTime('now'));
         $deviceFlag->setIp($ip);
         $this->deviceFlagRepository->save($deviceFlag);
-        $this->entityManager->persist($deviceFlag);
-        $this->entityManager->flush();
 
         return $deviceFlag;
     }
