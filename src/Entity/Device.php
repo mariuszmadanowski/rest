@@ -36,7 +36,7 @@ class Device
      *     message = "Invalid serial number. The serial number may only contain lowercase letters and numbers."
      * )
      */
-    private $serial_number;
+    private $serialNumber;
 
     /**
      * @var \DateTime
@@ -47,12 +47,12 @@ class Device
 
     public function getSerialNumber(): ?string
     {
-        return $this->serial_number;
+        return $this->serialNumber;
     }
 
     public function setSerialNumber(string $serialNumber): self
     {
-        $this->serial_number = $serialNumber;
+        $this->serialNumber = $serialNumber;
 
         return $this;
     }

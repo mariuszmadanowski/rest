@@ -16,12 +16,12 @@ class DeviceFlag
 {
     /**
       * @ORM\ManyToOne(targetEntity="Device", inversedBy="flags", cascade={"persist"})
-      * @ORM\JoinColumn(name="serial_number", referencedColumnName="serial_number")
+      * @ORM\JoinColumn(name="serial_number", referencedColumnName="serialNumber")
       */
     protected $device;
 
     /**
-      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="device_flags", cascade={"persist"})
+      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="deviceFlags", cascade={"persist"})
       * @ORM\JoinColumn(name="flag_id", referencedColumnName="id")
       */
     protected $flag;

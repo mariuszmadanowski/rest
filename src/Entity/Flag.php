@@ -18,24 +18,24 @@ class Flag
     /**
      * @ORM\OneToMany(targetEntity="DeviceFlag", mappedBy="flag")
      */
-    private $device_flags;
+    private $deviceFlags;
 
     /**
-     * @ORM\OneToMany(targetEntity="PossibleNextFlag", mappedBy="parent_flag")
+     * @ORM\OneToMany(targetEntity="PossibleNextFlag", mappedBy="parentFlag")
      */
-    private $child_flags;
+    private $childFlags;
 
     /**
-     * @ORM\OneToMany(targetEntity="PossibleNextFlag", mappedBy="child_flag")
+     * @ORM\OneToMany(targetEntity="PossibleNextFlag", mappedBy="childFlag")
      */
-    private $parent_flags;
+    private $parentFlags;
 
 
     public function __construct()
     {
-        $this->device_flags = new ArrayCollection();
-        $this->child_flags = new ArrayCollection();
-        $this->parent_flags = new ArrayCollection();
+        $this->deviceFlags = new ArrayCollection();
+        $this->childFlags = new ArrayCollection();
+        $this->parentFlags = new ArrayCollection();
     }
 
     /**
@@ -73,13 +73,13 @@ class Flag
      */
     public function getDeviceFlags(): Collection
     {
-        return $this->device_flags;
+        return $this->deviceFlags;
     }
 
     public function addDeviceFlag(DeviceFlag $deviceFlag): self
     {
-        if (!$this->device_flags->contains($deviceFlag)) {
-            $this->device_flags[] = $deviceFlag;
+        if (!$this->deviceFlags->contains($deviceFlag)) {
+            $this->deviceFlags[] = $deviceFlag;
             $deviceFlag->setFlag($this);
         }
 
@@ -88,8 +88,8 @@ class Flag
 
     public function removeDeviceFlag(DeviceFlag $deviceFlag): self
     {
-        if ($this->device_flags->contains($deviceFlag)) {
-            $this->device_flags->removeElement($deviceFlag);
+        if ($this->deviceFlags->contains($deviceFlag)) {
+            $this->deviceFlags->removeElement($deviceFlag);
             // set the owning side to null (unless already changed)
             if ($deviceFlag->getFlag() === $this) {
                 $deviceFlag->setFlag(null);
@@ -104,13 +104,13 @@ class Flag
      */
     public function getChildFlags(): Collection
     {
-        return $this->child_flags;
+        return $this->childFlags;
     }
 
     public function addChildFlag(PossibleNextFlag $childFlag): self
     {
-        if (!$this->child_flags->contains($childFlag)) {
-            $this->child_flags[] = $childFlag;
+        if (!$this->childFlags->contains($childFlag)) {
+            $this->childFlags[] = $childFlag;
             $childFlag->setParentFlag($this);
         }
 
@@ -119,8 +119,8 @@ class Flag
 
     public function removeChildFlag(PossibleNextFlag $childFlag): self
     {
-        if ($this->child_flags->contains($childFlag)) {
-            $this->child_flags->removeElement($childFlag);
+        if ($this->childFlags->contains($childFlag)) {
+            $this->childFlags->removeElement($childFlag);
             // set the owning side to null (unless already changed)
             if ($childFlag->getParentFlag() === $this) {
                 $childFlag->setParentFlag(null);
@@ -135,13 +135,13 @@ class Flag
      */
     public function getParentFlags(): Collection
     {
-        return $this->parent_flags;
+        return $this->parentFlags;
     }
 
     public function addParentFlag(PossibleNextFlag $parentFlag): self
     {
-        if (!$this->parent_flags->contains($parentFlag)) {
-            $this->parent_flags[] = $parentFlag;
+        if (!$this->parentFlags->contains($parentFlag)) {
+            $this->parentFlags[] = $parentFlag;
             $parentFlag->setChildFlag($this);
         }
 
@@ -150,8 +150,8 @@ class Flag
 
     public function removeParentFlag(PossibleNextFlag $parentFlag): self
     {
-        if ($this->parent_flags->contains($parentFlag)) {
-            $this->parent_flags->removeElement($parentFlag);
+        if ($this->parentFlags->contains($parentFlag)) {
+            $this->parentFlags->removeElement($parentFlag);
             // set the owning side to null (unless already changed)
             if ($parentFlag->getChildFlag() === $this) {
                 $parentFlag->setChildFlag(null);

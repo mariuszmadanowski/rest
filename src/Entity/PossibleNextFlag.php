@@ -15,16 +15,16 @@ use Doctrine\ORM\Mapping as ORM;
 class PossibleNextFlag
 {
     /**
-      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="child_flags", cascade={"persist"})
+      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="childFlags", cascade={"persist"})
       * @ORM\JoinColumn(name="parent_flag_id", referencedColumnName="id")
       */
-    protected $parent_flag;
+    protected $parentFlag;
 
     /**
-      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="parent_flags", cascade={"persist"})
+      * @ORM\ManyToOne(targetEntity="Flag", inversedBy="parentFlags", cascade={"persist"})
       * @ORM\JoinColumn(name="child_flag_id", referencedColumnName="id")
       */
-    protected $child_flag;
+    protected $childFlag;
 
 
     public function __construct()
@@ -46,24 +46,24 @@ class PossibleNextFlag
 
     public function getParentFlag(): ?Flag
     {
-        return $this->parent_flag;
+        return $this->parentFlag;
     }
 
-    public function setParentFlag(?Flag $parent_flag): self
+    public function setParentFlag(?Flag $parentFlag): self
     {
-        $this->parent_flag = $parent_flag;
+        $this->parentFlag = $parentFlag;
 
         return $this;
     }
 
     public function getChildFlag(): ?Flag
     {
-        return $this->child_flag;
+        return $this->childFlag;
     }
 
-    public function setChildFlag(?Flag $child_flag): self
+    public function setChildFlag(?Flag $childFlag): self
     {
-        $this->child_flag = $child_flag;
+        $this->childFlag = $childFlag;
 
         return $this;
     }
