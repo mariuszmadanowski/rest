@@ -37,16 +37,21 @@ services:
         class: App\Repository\DeviceRepository
         factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:
+            - "@doctrine.orm.entity_manager"
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
             - App\Entity\Device
     flag_repository:
         class: App\Repository\FlagRepository
         factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
             - App\Entity\Flag
     device_flag_repository:
         class: App\Repository\DeviceFlagRepository
         factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:
+            - "@doctrine.orm.entity_manager"
+            - '@Doctrine\Common\Persistence\ManagerRegistry'
             - App\Entity\DeviceFlag
     possible_next_flag_repository:
         class: App\Repository\PossibleNextFlagRepository
@@ -58,7 +63,15 @@ services:
         shared: false
         arguments:
             - "@device_repository"
+            - "@device_flag_repository"
+    flag_service:
+        class: App\Services\FlagService
+        shared: false
+        arguments:
+            - "@flag_repository"
+            - "@possible_next_flag_repository"
     app.device_controller:
         class: App\Controller\DeviceController
         arguments:
             - "@device_service"
+            - "@flag_service"

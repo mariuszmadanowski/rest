@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Entity\Device;
+use App\Entity\DeviceFlag;
+use App\Entity\Flag;
 use App\Repository\DeviceRepository;
+use App\Repository\DeviceFlagRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -12,15 +15,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DeviceService
 {
     private $deviceRepository;
+    private $deviceFlagRepository;
 
     /**
      * @author Mariusz Madanowski
      */
-    public function __construct(DeviceRepository $deviceRepository)
+    public function __construct(
+        DeviceRepository $deviceRepository,
+        DeviceFlagRepository $deviceFlagRepository
+    )
     {
         $this->deviceRepository = $deviceRepository;
+        $this->deviceFlagRepository = $deviceFlagRepository;
     }
 
+    /**
+     * @author Mariusz Madanowski
+     */
     public function getAllDevices(): ?array
     {
         return $this->deviceRepository->findAll();
@@ -29,47 +40,65 @@ class DeviceService
     /**
      * @author Mariusz Madanowski
      */
-    // public function removePosition($id)
-    // {
-    //     $repository = $this->entityManager->getRepository($this->instanceClassName);
-	// 	$dictionaryInstance = $repository->findOneBy(array('id' => $id));
-    //
-    //     if (is_null($dictionaryInstance)) {
-    //         throw new NotFoundHttpException('Nie istnieje taka pozycja.');
-    //     }
-    //
-    //     if (strpos($this->instanceClassName, 'Instance')) {
-    //         $removedOrder = $dictionaryInstance->getOrder();
-    //         $dictionaryInstance->setOrder(0);
-    //     }
-    //
-    //     $dictionaryInstance->setVisibility(false);
-    //     $dictionaryInstance->setRemoved(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')));
-    //     $this->entityManager->persist($dictionaryInstance);
-    //     $this->entityManager->flush();
-    //
-    //     if (strpos($this->instanceClassName, 'Instance')) {
-    //         $dictionaryInstances = $repository->findBy(array('visibility' => true));
-    //         foreach ($dictionaryInstances as $dictionaryInstance) {
-    //             if (($order = $dictionaryInstance->getOrder()) > $removedOrder) {
-    //                 $order--;
-    //                 $dictionaryInstance->setOrder($order);
-    //                 $this->entityManager->persist($dictionaryInstance);
-    //                 $this->entityManager->flush();
-    //             }
-    //         }
-    //     }
-    //
-    //     $this->session->getFlashBag()->add(
-    //         'success',
-    //         'Usunięto.'
-    //     );
-    //
-    //     return new RedirectResponse(
-    //         $this->router->generate($this->dictionaryPath, array(
-    //             'name' => $this->instanceName
-    //         ))
-    //     );
-    // }
+    public function getAllDeviceFlags(): ?array
+    {
+        return $this->deviceFlagRepository->findAll();
+    }
 
+    /**
+     * @author Mariusz Madanowski
+     */
+    public function getDeviceBySerialNumber(string $serialNumber): ?Device
+    {
+        return $this->deviceRepository->findOneBy(
+            array(
+                'serialNumber' => $serialNumber
+            )
+        );
+    }
+
+    /**
+     * @author Mariusz Madanowski
+     */
+    public function getCurrentDeviceFlag(Device $device): ?DeviceFlag
+    {
+        return $this->deviceFlagRepository->findOneBy(
+            array(
+                'device' => $device,
+            ),
+            array(
+                'created' => 'DESC',
+            )
+        );
+    }
+
+    /**
+     * @author Mariusz Madanowski
+     */
+    public function addDevice(string $serialNumber): ?Device
+    {
+        $device = new Device();
+        $device->setSerialNumber($serialNumber);
+        $device->setCreated(new \DateTime('now'));
+        $this->deviceRepository->save($device);
+
+        return $device;
+    }
+
+    /**
+     * @author Mariusz Madanowski
+     */
+    public function addDeviceFlag(Device $device, Flag $flag, string $ip): ?DeviceFlag
+    {
+        $deviceFlag = new DeviceFlag();
+        $deviceFlag->setDevice($device);
+        $deviceFlag->setFlag($flag);
+        $deviceFlag->setCreated(new \DateTime('now'));
+        $deviceFlag->setIp($ip);
+        $this->deviceFlagRepository->save($deviceFlag);
+        $this->entityManager->persist($deviceFlag);
+        $this->entityManager->flush();
+
+        return $deviceFlag;
+    }
 }

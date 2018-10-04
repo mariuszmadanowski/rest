@@ -12,6 +12,7 @@ use App\Entity\Flag;
 use App\Entity\DeviceFlag;
 use App\Entity\PossibleNextFlag;
 use App\Services\DeviceService;
+use App\Services\FlagService;
 
 /**
  * Device controller.
@@ -26,12 +27,22 @@ class DeviceController extends Controller
     private $deviceService;
 
     /**
+     * @var FlagService
+     */
+    private $flagService;
+
+    /**
      * DeviceController constructor.
      * @param DeviceService $deviceService
+     * @param FlagService $flagService
      */
-    public function __construct(DeviceService $deviceService)
+    public function __construct(
+        DeviceService $deviceService,
+        FlagService $flagService
+    )
     {
         $this->deviceService = $deviceService;
+        $this->flagService = $flagService;
     }
 
     /**
@@ -51,17 +62,13 @@ class DeviceController extends Controller
      */
     public function all()
     {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $this->getDoctrine()->getRepository(Flag::class);
-        $allFlags = $repository->findAll();
+        $allFlags = $this->flagService->getAllFlags();
 
         $allDevices = $this->deviceService->getAllDevices();
 
-        $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
-        $allDeviceFlags = $repository3->findAll();
+        $allDeviceFlags = $this->deviceService->getAllDeviceFlags();
 
-        $repository4 = $this->getDoctrine()->getRepository(PossibleNextFlag::class);
-        $allPossibleNextFlags = $repository4->findAll();
+        $allPossibleNextFlags = $this->flagService->getAllPossibleNextFlags();
 
         dump($allFlags, $allDevices, $allDeviceFlags, $allPossibleNextFlags);
         die();
@@ -76,70 +83,40 @@ class DeviceController extends Controller
      */
     public function postDeviceAction(string $serialNumber, string $flagName, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $this->getDoctrine()->getRepository(Flag::class);
-        $flag = $repository->findOneBy(
-            array(
-                'name' => $flagName,
-            )
-        );
+        $flag = $this->flagService->getFlagByName($flagName);
         if (!$flag) {
             //throw new EntityNotFoundException('Flag with name '.$flagName.' does not exist!');
             dump('Flag with name '.$flagName.' does not exist!', Response::HTTP_NOT_FOUND, []);
             die();
         }
 
-        $repository2 = $this->getDoctrine()->getRepository(Device::class);
-        $device = $repository2->findOneBy(
-            array(
-                'serialNumber' => $serialNumber,
-            )
-        );
+        $device = $this->deviceService->getDeviceBySerialNumber($serialNumber);
 
         if ($flag->getId() != 1 && !$device) {
             //throw new EntityNotFoundException('Devive with serial number '.$serialNumber.' does not exist!');
             dump('Devive with serial number '.$serialNumber.' does not exist!', Response::HTTP_NOT_FOUND, []);
             die();
-        } elseif ($flag->getId() == 1 && !count($device)) {
-            $device = new Device();
-            $device->setSerialNumber($serialNumber);
-            $device->setCreated(new \DateTime('now'));
-            $em->persist($device);
-            $em->flush();
+        } elseif ($flag->getId() == 1 && !$device) {
+            $device = $this->deviceService->addDevice($serialNumber);
+            $deviceFlag = $this->deviceService->addDeviceFlag(
+                $device,
+                $flag,
+                $request->getClientIp()
+            );
 
-            $deviceFlag = new DeviceFlag();
-            $deviceFlag->setDevice($device);
-            $deviceFlag->setFlag($flag);
-            $deviceFlag->setCreated(new \DateTime('now'));
-            $deviceFlag->setIp($request->getClientIp());
-            $em->persist($deviceFlag);
-            $em->flush();
             dump($deviceFlag, Response::HTTP_CREATED, []);die();
         }
 
-        $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
-        $lastDeviceFlag = $repository3->findOneBy(
-            array(
-                'device' => $device,
-            ),
-            array(
-                'created' => 'DESC',
-            )
-        );
-
-        $possibleNextFlagsIds = [];
-        foreach ($lastDeviceFlag->getFlag()->getChildFlags() as $object) {
-            $possibleNextFlagsIds[] = $object->getChildFlag()->getId();
-        }
+        $currentDeviceFlag = $this->deviceService->getCurrentDeviceFlag($device);
+        $possibleNextFlagsIds = $this->flagService->getPossibleNextFlagsIds($currentDeviceFlag);
 
         if (in_array($flag->getId(), $possibleNextFlagsIds)) {
-            $deviceFlag = new DeviceFlag();
-            $deviceFlag->setDevice($device);
-            $deviceFlag->setFlag($flag);
-            $deviceFlag->setCreated(new \DateTime('now'));
-            $deviceFlag->setIp($request->getClientIp());
-            $em->persist($deviceFlag);
-            $em->flush();
+            $deviceFlag = $this->deviceService->addDeviceFlag(
+                $device,
+                $flag,
+                $request->getClientIp()
+            );
+
             dump($deviceFlag, Response::HTTP_CREATED, []);die();
         } else {
             // ta flaga jest zabroniona dla tego urządzenia
