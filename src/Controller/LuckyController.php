@@ -47,7 +47,7 @@ class LuckyController extends Controller
                 )
             );
             if (!$flag) {
-                throw new EntityNotFoundException('Flag with name '.$flagName.' does not exist!');
+                throw new EntityNotFoundException('Flag with name '.$flagName.' does not exist!');die();
             }
 
             $repository2 = $this->getDoctrine()->getRepository(Device::class);
@@ -58,15 +58,24 @@ class LuckyController extends Controller
             );
 
             if ($flag->getId() != 1 && !$device) {
-                throw new EntityNotFoundException('Devive with serial number '.$serialNumber.' does not exist!');
+                throw new EntityNotFoundException('Devive with serial number '.$serialNumber.' does not exist!');die();
             } elseif ($flag->getId() == 1 && !count($device)) {
                 $device = new Device();
                 $device->setSerialNumber($serialNumber);
                 $device->setCreated(new \DateTime('now'));
                 $em->persist($device);
                 $em->flush();
+
+                $deviceFlag = new DeviceFlag();
+                $deviceFlag->setDevice($device);
+                $deviceFlag->setFlag($flag);
+                $deviceFlag->setCreated(new \DateTime('now'));
+                $deviceFlag->setIp($request->getClientIp());
+                $em->persist($deviceFlag);
+                $em->flush();
+                dump($deviceFlag, Response::HTTP_CREATED, []);die();
             }
-dump($device);die();
+
             $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
             $lastDeviceFlag = $repository3->findOneBy(
                 array(
@@ -90,10 +99,10 @@ dump($device);die();
                 $deviceFlag->setIp($request->getClientIp());
                 $em->persist($deviceFlag);
                 $em->flush();
-                dump($deviceFlag, Response::HTTP_CREATED, []);
+                dump($deviceFlag, Response::HTTP_CREATED, []);die();
             } else {
                 // ta flaga jest zabroniona dla tego urządzenia
-                dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);
+                dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);die();
             }
         }
 }
