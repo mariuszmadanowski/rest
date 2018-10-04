@@ -70,7 +70,9 @@ class LuckyController extends Controller
             $repository3 = $this->getDoctrine()->getRepository(DeviceFlag::class);
             $lastDeviceFlag = $repository3->findOneBy(
                 array(
-                    'serialNumber' => $serialNumber,
+                    'device' => $device,
+                ),
+                array(
                     'created' => 'DESC',
                 )
             );

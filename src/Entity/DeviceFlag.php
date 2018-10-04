@@ -16,7 +16,7 @@ class DeviceFlag
 {
     /**
       * @ORM\ManyToOne(targetEntity="Device", inversedBy="flags", cascade={"persist"})
-      * @ORM\JoinColumn(name="serial_number", referencedColumnName="serialNumber")
+      * @ORM\JoinColumn(name="serial_number", referencedColumnName="serial_number")
       */
     protected $device;
 
