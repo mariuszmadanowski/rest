@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use App\Entity\Device;
 use App\Entity\Flag;
 use App\Entity\DeviceFlag;
+use App\Entity\PossibleNextFlag;
 
 /**
  * Device controller.
