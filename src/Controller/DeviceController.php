@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use FOS\RestBundle\Controller\FOSRestController;
 use Doctrine\ORM\EntityNotFoundException;
 use App\Entity\Device;
 use App\Entity\Flag;
