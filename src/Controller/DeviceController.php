@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -120,7 +121,8 @@ class DeviceController extends FOSRestController
                 $request->getClientIp()
             );
 
-            return View::create($deviceFlag, Response::HTTP_CREATED , []);
+            $view = View::create($deviceFlag, Response::HTTP_CREATED , []);
+            return $this->handle($view);
         } else {
             // ta flaga jest zabroniona dla tego urządzenia
             dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);die();
