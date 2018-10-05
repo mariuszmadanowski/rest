@@ -81,12 +81,14 @@ class DeviceController extends FOSRestController
     /**
      * Create Article.
      *
-     * @Route("/device/{serialNumber}/{flagName}", name="device")
+     * @FOSRest\Post("/device/{serialNumber}/{flagName}")
      *
-     * @return View
+     * @return array
      */
-    public function postDeviceAction(string $serialNumber, string $flagName, Request $request)
+    public function postDeviceAction(Request $request)
     {
+        $serialNumber = $request->get('serialNumber');
+        $flagName = $request->get('flagName');
         $flag = $this->flagService->getFlagByName($flagName);
         if (!$flag) {
             //throw new EntityNotFoundException('Flag with name '.$flagName.' does not exist!');
@@ -121,8 +123,9 @@ class DeviceController extends FOSRestController
                 $request->getClientIp()
             );
 
-            $view = View::create($deviceFlag, Response::HTTP_CREATED , []);
-            return $this->handleView($view);
+            dump($deviceFlag, Response::HTTP_CREATED , []);die();
+            // $view = View::create($deviceFlag, Response::HTTP_CREATED , []);
+            // return $this->handleView($view);
         } else {
             // ta flaga jest zabroniona dla tego urządzenia
             dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);die();
