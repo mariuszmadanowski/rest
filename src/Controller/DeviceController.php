@@ -21,7 +21,7 @@ use App\Services\FlagService;
  *
  * @Route("/api")
  */
-class DeviceController extends Controller
+class DeviceController extends FOSRestController
 {
     /**
      * @var DeviceService
