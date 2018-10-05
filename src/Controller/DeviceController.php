@@ -117,7 +117,7 @@ class DeviceController extends Controller
                 $request->getClientIp()
             );
 
-            dump($deviceFlag, Response::HTTP_CREATED, []);die();
+            return View::create($deviceFlag, Response::HTTP_CREATED , []);
         } else {
             // ta flaga jest zabroniona dla tego urządzenia
             dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);die();
