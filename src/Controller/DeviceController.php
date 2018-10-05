@@ -83,7 +83,7 @@ class DeviceController extends FOSRestController
      *
      * @Route("/device/{serialNumber}/{flagName}", name="device")
      *
-     * @return array
+     * @return View
      */
     public function postDeviceAction(string $serialNumber, string $flagName, Request $request)
     {
@@ -122,7 +122,7 @@ class DeviceController extends FOSRestController
             );
 
             $view = View::create($deviceFlag, Response::HTTP_CREATED , []);
-            return $this->handle($view);
+            return $this->handleView($view);
         } else {
             // ta flaga jest zabroniona dla tego urządzenia
             dump('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE, []);die();
