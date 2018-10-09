@@ -3,11 +3,14 @@
 namespace App\Services;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @author Mariusz Madanowski
  */
-class RequestHelperService
+class HelperService
 {
     private $request;
 
@@ -31,5 +34,27 @@ class RequestHelperService
             }
             $this->request->request->replace(is_array($data) ? $data : array());
         }
+    }
+
+    /**
+     * @author Mariusz Madanowski
+     */
+    public function prepareObject($object)
+    {
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setIgnoredAttributes(array(
+                'deviceFlags',
+                'childFlags',
+                'parentFlags',
+                'flags',
+                'timezone'
+            ));
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $encoder = new JsonEncoder();
+        $serializer = new Serializer(array($normalizer), array($encoder));
+
+        return $serializer->serialize($object, 'json');
     }
 }

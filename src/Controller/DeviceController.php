@@ -8,9 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -24,7 +21,7 @@ use App\Entity\DeviceFlag;
 use App\Entity\PossibleNextFlag;
 use App\Services\DeviceService;
 use App\Services\FlagService;
-use App\Services\RequestHelperService;
+use App\Services\HelperService;
 
 /**
  * Device controller.
@@ -44,25 +41,25 @@ class DeviceController extends FOSRestController
     private $flagService;
 
     /**
-     * @var RequestHelperService
+     * @var HelperService
      */
-    private $requestHelperService;
+    private $helperService;
 
     /**
      * DeviceController constructor.
      * @param DeviceService $deviceService
      * @param FlagService $flagService
-     * @param RequestHelperService $requestHelperService
+     * @param HelperService $helperService
      */
     public function __construct(
         DeviceService $deviceService,
         FlagService $flagService,
-        RequestHelperService $requestHelperService
+        HelperService $helperService
     )
     {
         $this->deviceService = $deviceService;
         $this->flagService = $flagService;
-        $this->requestHelperService = $requestHelperService;
+        $this->helperService = $helperService;
     }
 
     /**
@@ -94,7 +91,7 @@ class DeviceController extends FOSRestController
      */
     public function postDeviceAction(Request $request, ParamFetcherInterface $paramFetcher)
     {
-        $this->requestHelperService->convertJsonStringToArray();
+        $this->helperService->convertJsonStringToArray();
 
         $serialNumber = $paramFetcher->get('serialNumber');
         $flagName = $paramFetcher->get('flagName');
@@ -116,20 +113,7 @@ class DeviceController extends FOSRestController
                 $request->getClientIp()
             );
 
-            $normalizer = new ObjectNormalizer();
-            $normalizer->setIgnoredAttributes(array(
-                    'deviceFlags',
-                    'childFlags',
-                    'parentFlags',
-                    'flags'
-                ));
-            $normalizer->setCircularReferenceHandler(function ($object) {
-                return $object->getId();
-            });
-            $encoder = new JsonEncoder();
-            $serializer = new Serializer(array($normalizer), array($encoder));
-
-            return new JsonResponse($serializer->serialize($deviceFlag, 'json'), Response::HTTP_CREATED);
+            return new JsonResponse($this->helperService->prepareObject($deviceFlag), Response::HTTP_CREATED);
         }
 
         $currentDeviceFlag = $this->deviceService->getCurrentDeviceFlag($device);
@@ -141,7 +125,7 @@ class DeviceController extends FOSRestController
                 $request->getClientIp()
             );
 
-            return new JsonResponse($deviceFlag, Response::HTTP_CREATED);
+            return new JsonResponse($this->helperService->prepareObject($deviceFlag), Response::HTTP_CREATED);
         } else {
             return new JsonResponse('This flag is not allowed for this device.', Response::HTTP_NOT_ACCEPTABLE);
         }
