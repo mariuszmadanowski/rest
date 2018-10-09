@@ -84,7 +84,7 @@ class DeviceController extends FOSRestController
      *
      * @FOSRest\Post("/device")
      * @param ParamFetcherInterface $paramFetcher
-     * @RequestParam(name="serialNumber", default="", strict=true)
+     * @RequestParam(name="serialNumber", default="", requirements={"rule" = "[a-z0-9]{1,10}", "error_message" = "Invalid serialNumber. The seriaNumber may only contain lowercase letters and numbers. The seriaNumber length should be between 1 and 10 characters."}, strict=true)
      * @RequestParam(name="flagName", default="", strict=true)
      *
      * @return array
