@@ -70,8 +70,14 @@ services:
         arguments:
             - "@flag_repository"
             - "@possible_next_flag_repository"
+    request_helper_service:
+        class: App\Services\RequestHelperService
+        shared: false
+        arguments:
+            - "@request_stack"
     app.device_controller:
         class: App\Controller\DeviceController
         arguments:
             - "@device_service"
             - "@flag_service"
+            - "@request_helper_service"
