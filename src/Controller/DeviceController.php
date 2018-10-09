@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -113,7 +116,20 @@ class DeviceController extends FOSRestController
                 $request->getClientIp()
             );
 
-            return new JsonResponse($deviceFlag, Response::HTTP_CREATED);
+            $normalizer = new ObjectNormalizer();
+            $normalizer->setIgnoredAttributes(array(
+                    'deviceFlags',
+                    'childFlags',
+                    'parentFlags',
+                    'flags'
+                ));
+            $normalizer->setCircularReferenceHandler(function ($object) {
+                return $object->getId();
+            });
+            $encoder = new JsonEncoder();
+            $serializer = new Serializer(array($normalizer), array($encoder));
+
+            return new JsonResponse($serializer->serialize($deviceFlag, 'json'), Response::HTTP_CREATED);
         }
 
         $currentDeviceFlag = $this->deviceService->getCurrentDeviceFlag($device);
